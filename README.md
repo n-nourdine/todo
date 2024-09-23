@@ -72,17 +72,19 @@ The server will start on `http://localhost:8080` (or the port you specified in t
 ## Project Structure
 
 ```
-todo-app/
+todo-app
 ├── main.go
-├── handlers/
+├── handlers
 │   └── todo_handlers.go
-├── models/
+├── models
 │   └── todo.go
-├── database/
+├── database
 │   └── db.go
-├── public/
+├── public
+│   ├── 404.html
+│   ├── css
+│   │   └── style.css
 │   └── index.html
-│   └── style.css
 ├── todo.db
 ├── .env
 ├── .gitignore
