@@ -2,12 +2,6 @@
 
 A simple, efficient todo list application built with Go, using the Echo framework for the backend and SQLite3 for data storage.
 
-## Author
-
-Nourdine Nasser
-- GitHub: [@n-nourdine](https://github.com/n-nourdine)
-- Email: nassernourdine6@gmail.com
-
 ## Features
 
 - Create, read, update, and delete todo items
@@ -90,6 +84,12 @@ todo-app
 ├── .gitignore
 └── README.md
 ```
+
+## Author
+
+Nourdine Nasser
+- GitHub: [@n-nourdine](https://github.com/n-nourdine)
+- Email: nassernourdine6@gmail.com
 
 ## Contributing
 
