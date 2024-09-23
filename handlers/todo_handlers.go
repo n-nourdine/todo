@@ -5,7 +5,6 @@ import (
 	"html/template"
 	"io"
 	"net/http"
-	"os"
 	"strconv"
 	"time"
 
@@ -81,9 +80,7 @@ func getTodo(c echo.Context) error {
 	return c.Render(http.StatusOK, "index", []md.Todo{})
 }
 
-func Start() {
-	port := os.Getenv("PORT")
-
+func Start(p string) {
 	db.Init()
 
 	t := &Template{
@@ -104,7 +101,7 @@ func Start() {
 
 	e.HTTPErrorHandler = ErrorPage
 
-	e.Logger.Fatal(e.Start(fmt.Sprintf(":%v", port)))
+	e.Logger.Fatal(e.Start(fmt.Sprintf(":%v", p)))
 }
 
 func ErrorPage(err error, c echo.Context) {
