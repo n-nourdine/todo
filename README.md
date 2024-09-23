@@ -91,14 +91,6 @@ todo-app
 └── README.md
 ```
 
-## Testing
-
-Run the tests with:
-
-```
-go test ./...
-```
-
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
