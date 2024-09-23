@@ -72,5 +72,3 @@
 ## 10. N'oubliez pas le .gitignore
 
 - Maintenez un fichier .gitignore à jour pour éviter de committer des fichiers inutiles
-
-En suivant ces pratiques, vos commits seront plus professionnels, plus utiles pour votre équipe, et faciliteront la maintenance de votre projet à long terme.
