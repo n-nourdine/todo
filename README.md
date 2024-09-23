@@ -80,8 +80,12 @@ todo-app/
 │   └── todo.go
 ├── database/
 │   └── db.go
-├── schema.sql
+├── public/
+│   └── index.html
+│   └── style.css
+├── todo.db
 ├── .env
+├── .gitignore
 └── README.md
 ```
 
