@@ -90,3 +90,23 @@ func GetById(db *sql.DB, id int) (*md.Todo, error) {
 	}
 	return &todo, nil
 }
+
+func Delete(db *sql.DB, id int) error {
+	stmt, err := db.Prepare("DELETE FROM todos WHERE id=?")
+	if err != nil {
+		return err
+	}
+
+	_, err = stmt.Exec(id)
+	return err
+}
+
+func Update(db *sql.DB, todo md.Todo) error {
+	stmt, err := db.Prepare("UPDATE todos SET title=?, status=? WHERE id=?")
+	if err != nil {
+		return err
+	}
+
+	_, err = stmt.Exec(todo.Title, todo.TodoId)
+	return err
+}
