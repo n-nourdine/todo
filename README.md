@@ -60,8 +60,8 @@ The server will start on `http://localhost:8080` (or the port you specified in t
 - `GET /todos`: Retrieve all todos
 - `GET /todos/:id`: Retrieve a specific todo
 - `POST /todos`: Create a new todo
-- `PUT /todos/:id`: Update an existing todo
-- `DELETE /todos/:id`: Delete a todo
+- `PUT /todos`: Update an existing todo
+- `DELETE /todos`: Delete a todo
 
 ## Project Structure
 
