@@ -77,7 +77,7 @@ func getTodo(c echo.Context) error {
 
 	id, err := strconv.Atoi(idx)
 	if err != nil {
-		return c.JSON(http.StatusForbidden, "id must be a number")
+		return c.JSON(http.StatusBadRequest, "invalid id!")
 	}
 
 	d := db.New()
@@ -89,8 +89,8 @@ func getTodo(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, todo)
 	}
 
-	// return c.Render(http.StatusOK, "index", []md.Todo{})
-	return c.JSON(http.StatusOK, []md.Todo{})
+	// return c.Render(http.StatusOK, "index", todo)
+	return c.JSON(http.StatusOK, todo)
 }
 
 func deleteTodo(c echo.Context) error {
@@ -142,7 +142,7 @@ func Start(p string) {
 	e.Static("/src", "public/css")
 	e.Renderer = t
 
-	e.GET("/todos", getTodos)
+	e.GET("/todos/", getTodos)
 	e.GET("/todos/:id", getTodo)
 	e.POST("/todos", addTodo)
 	e.PUT("/todos", updateTodo)
@@ -163,5 +163,6 @@ func ErrorPage(err error, c echo.Context) {
 
 	if err := c.File(errorPage); err != nil {
 		c.Logger().Error(err)
+		c.JSON(http.StatusNotFound, "not found!")
 	}
 }

@@ -107,6 +107,6 @@ func Update(db *sql.DB, todo md.Todo) error {
 		return err
 	}
 
-	_, err = stmt.Exec(todo.Title, todo.TodoId)
+	_, err = stmt.Exec(todo.Title, todo.Status, todo.TodoId)
 	return err
 }
