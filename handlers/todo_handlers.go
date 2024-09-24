@@ -6,6 +6,7 @@ import (
 	"io"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/labstack/echo/v4"
@@ -23,48 +24,56 @@ func (t *Template) Render(w io.Writer, name string, data interface{}, c echo.Con
 }
 
 func addTodo(c echo.Context) error {
-	title := c.FormValue("title")
-	if title == "" {
-		return c.String(http.StatusBadRequest, "title can not be empty!")
+	todo := md.Todo{}
+	err := c.Bind(&todo)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, "wrong data filful")
+	}
+
+	if strings.TrimSpace(todo.Title) == "" {
+		return c.JSON(http.StatusBadRequest, "title can not be empty!")
 	}
 
 	conn := db.New()
 	defer conn.Close()
 
-	todo := md.TodoModel{
-		Title:     title,
-		Status:    false,
+	todoM := md.TodoModel{
+		Title:     todo.Title,
+		Status:    todo.Status,
 		CreatedAt: time.Now(),
 	}
 
-	id, err := db.Add(conn, todo)
+	id, err := db.Add(conn, todoM)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, "failed to add todo!")
 	}
-	return c.Render(http.StatusOK, "index", []md.Todo{
-		{
-			Title:  title,
-			TodoId: id,
-			Status: false,
-		},
-	})
+	// return c.Render(http.StatusOK, "index", []md.Todo{
+	// 	{
+	// 		Title:  title,
+	// 		TodoId: id,
+	// 		Status: false,
+	// 	},
+	// })
+
+	todo.TodoId = id
+	return c.JSON(http.StatusOK, todo)
 }
 
 func getTodos(c echo.Context) error {
 	d := db.New()
+	defer d.Close()
+
 	todos, err := db.GetAll(d)
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, "fail to fetch data!")
 	}
 
-	return c.Render(http.StatusOK, "index", todos)
+	// return c.Render(http.StatusOK, "index", todos)
+	return c.JSON(http.StatusOK, todos)
 }
 
 func getTodo(c echo.Context) error {
 	idx := c.Param("id")
-	if idx == "" {
-		return c.String(http.StatusBadRequest, "invalid path param!")
-	}
 
 	id, err := strconv.Atoi(idx)
 	if err != nil {
@@ -72,12 +81,50 @@ func getTodo(c echo.Context) error {
 	}
 
 	d := db.New()
+	defer d.Close()
+
 	todo, err := db.GetById(d, id)
 	if err != nil || todo == nil {
-		return c.Render(http.StatusBadRequest, "index", todo)
+		// return c.Render(http.StatusBadRequest, "index", todo)
+		return c.JSON(http.StatusBadRequest, todo)
 	}
 
-	return c.Render(http.StatusOK, "index", []md.Todo{})
+	// return c.Render(http.StatusOK, "index", []md.Todo{})
+	return c.JSON(http.StatusOK, []md.Todo{})
+}
+
+func deleteTodo(c echo.Context) error {
+	todo := md.Todo{}
+
+	err := c.Bind(&todo)
+	if err != nil {
+		return c.JSON(http.StatusForbidden, "transaction failed!")
+	}
+
+	d := db.New()
+	defer d.Close()
+
+	if err := db.Delete(d, todo.TodoId); err != nil {
+		return c.JSON(http.StatusInternalServerError, "transaction failed!")
+	}
+	return c.JSON(http.StatusOK, "todo removed")
+}
+
+func updateTodo(c echo.Context) error {
+	todo := md.Todo{}
+
+	err := c.Bind(&todo)
+	if err != nil {
+		return c.JSON(http.StatusForbidden, "transaction failed!")
+	}
+
+	d := db.New()
+	defer d.Close()
+
+	if err := db.Update(d, todo); err != nil {
+		return c.JSON(http.StatusInternalServerError, "transaction failed!")
+	}
+	return c.JSON(http.StatusOK, "todo removed")
 }
 
 func Start(p string) {
@@ -98,6 +145,8 @@ func Start(p string) {
 	e.GET("/todos", getTodos)
 	e.GET("/todos/:id", getTodo)
 	e.POST("/todos", addTodo)
+	e.PUT("/todos", updateTodo)
+	e.DELETE("/todos", deleteTodo)
 
 	e.HTTPErrorHandler = ErrorPage
 
